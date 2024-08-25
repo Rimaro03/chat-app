@@ -30,26 +30,16 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import com.example.chat_app.socket.SocketManager
 
 @Composable
 fun MessagesScreen(
-    onSendMessage: (String) -> Unit,
-    onMessageReceived: ((String)->Unit) -> Unit = {},
-    messageList: ArrayList<String> = ArrayList(),
+    socketManager: SocketManager = SocketManager(),
+    messages: List<String> = emptyList(),
     addMessage: (String) -> Unit = {},
     modifier: Modifier = Modifier
 ) {
     var message by remember { mutableStateOf("")}
-    // new
-
-    fun messageListener(message: String) {
-        println("Message received: $message")
-        addMessage(message)
-    }
-
-    onMessageReceived { msg ->
-        messageListener(msg)
-    }
 
     Column (
         modifier = modifier,
@@ -62,7 +52,7 @@ fun MessagesScreen(
                 .padding(10.dp),
 
         ) {
-            messageList.forEach {
+            messages.forEach {
                 Text(it)
             }
         }
@@ -83,7 +73,7 @@ fun MessagesScreen(
             Button(
                 onClick = {
                     if(message.isNotEmpty()) {
-                        onSendMessage(message)
+                        socketManager.sendMessage(message)
                     }
                     println("Message sent: $message")
                     addMessage(message)
@@ -99,7 +89,5 @@ fun MessagesScreen(
 @Preview
 @Composable
 fun MessagesScreenPreview() {
-    MessagesScreen(
-        onSendMessage = {}
-    )
+    MessagesScreen()
 }

@@ -18,13 +18,12 @@ import com.example.chat_app.socket.SocketManager
 import com.example.chat_app.ui.ChatViewModel
 import com.example.chat_app.ui.screens.LoginScreen
 import com.example.chat_app.ui.screens.MessagesScreen
-import androidx.lifecycle.viewmodel.compose.viewModel
 
 @Composable
 fun App(
-    viewModel: ChatViewModel = viewModel(),
     navController: NavHostController = rememberNavController(),
-    socketManager: SocketManager
+    socketManager: SocketManager,
+    viewModel: ChatViewModel = ChatViewModel(socketManager),
 ) {
     val backStackEntry by navController.currentBackStackEntryAsState()
     val currentScreen = Routes.valueOf(
@@ -32,7 +31,7 @@ fun App(
     )
 
     Scaffold { innerPadding ->
-        val uiState by viewModel.uiState.collectAsState()
+        val messages by viewModel.messages.collectAsState()
 
         NavHost(
             navController = navController,
@@ -46,20 +45,14 @@ fun App(
                 LoginScreen(
                     onLogin = {
                         socketManager.connect()
-                        socketManager.onConnect()
-                        socketManager.onConnectErr()
                         navController.navigate(Routes.Messages.name)
                     },
                 )
             }
             composable(route = Routes.Messages.name) {
                 MessagesScreen(
-                    onSendMessage = { message ->
-                        socketManager.sendMessage(message)
-                        viewModel.setMessage(message)
-                    },
-                    onMessageReceived = { listener -> socketManager.onMessageReceived(listener) },
-                    messageList = uiState.messageList,
+                    socketManager = socketManager,
+                    messages = messages,
                     addMessage = { message -> viewModel.addMessage(message) },
                 )
             }

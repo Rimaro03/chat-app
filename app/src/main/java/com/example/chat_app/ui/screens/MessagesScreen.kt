@@ -11,6 +11,8 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.Send
 import androidx.compose.material.icons.filled.Send
@@ -45,23 +47,25 @@ fun MessagesScreen(
         modifier = modifier,
         verticalArrangement = Arrangement.SpaceBetween,
     ) {
+        // Messages
         Column(
             modifier = Modifier
                 .fillMaxWidth()
-                .fillMaxHeight()
-                .padding(10.dp),
-
+                .weight(1f, true)
+                .verticalScroll(rememberScrollState())
+                .padding(bottom = 8.dp)
         ) {
             messages.forEach {
                 Text(it)
             }
         }
+
+        // Message input
         Row (
+            verticalAlignment = Alignment.CenterVertically,
             modifier = Modifier
                 .fillMaxWidth()
-                .padding(10.dp)
-                .weight(1f, false),
-            verticalAlignment = Alignment.Bottom
+                .padding(10.dp),
         ) {
             OutlinedTextField(
                 value = message,

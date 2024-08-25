@@ -1,14 +1,27 @@
 package com.example.chat_app
 
+import android.annotation.SuppressLint
+import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.automirrored.filled.ArrowBack
+import androidx.compose.material.icons.filled.ArrowBack
+import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
+import androidx.compose.material3.Text
+import androidx.compose.material3.TopAppBar
+import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.res.stringResource
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
@@ -18,6 +31,33 @@ import com.example.chat_app.socket.SocketManager
 import com.example.chat_app.ui.ChatViewModel
 import com.example.chat_app.ui.screens.LoginScreen
 import com.example.chat_app.ui.screens.MessagesScreen
+
+@OptIn(ExperimentalMaterial3Api::class)
+@Composable
+fun AppBar(
+    currentScreen: Routes,
+    canNavigateBack: Boolean,
+    navigateUp: () -> Unit,
+    modifier: Modifier = Modifier
+) {
+    TopAppBar(
+        title = { Text(currentScreen.name) },
+        colors = TopAppBarDefaults.mediumTopAppBarColors(
+            containerColor = MaterialTheme.colorScheme.primaryContainer
+        ),
+        modifier = modifier,
+        navigationIcon = {
+            if (canNavigateBack) {
+                IconButton(onClick = navigateUp) {
+                    Icon(
+                        imageVector = Icons.AutoMirrored.Filled.ArrowBack,
+                        contentDescription = ("back")
+                    )
+                }
+            }
+        }
+    )
+}
 
 @Composable
 fun App(
@@ -30,16 +70,22 @@ fun App(
         backStackEntry?.destination?.route ?: Routes.Login.name
     )
 
-    Scaffold { innerPadding ->
+    Scaffold (
+        topBar = {
+            AppBar(
+                currentScreen = currentScreen,
+                canNavigateBack = navController.previousBackStackEntry != null,
+                navigateUp = { navController.popBackStack() }
+            )
+        },
+        modifier = Modifier.fillMaxSize()
+    ) { innerPadding ->
         val messages by viewModel.messages.collectAsState()
 
         NavHost(
             navController = navController,
             startDestination = Routes.Login.name,
-            modifier = Modifier
-                .fillMaxSize()
-                .verticalScroll(rememberScrollState())
-                .padding(innerPadding)
+            modifier = Modifier.padding(innerPadding)
         ){
             composable(route = Routes.Login.name) {
                 LoginScreen(
@@ -54,6 +100,7 @@ fun App(
                     socketManager = socketManager,
                     messages = messages,
                     addMessage = { message -> viewModel.addMessage(message) },
+                    modifier = Modifier.fillMaxHeight()
                 )
             }
         }

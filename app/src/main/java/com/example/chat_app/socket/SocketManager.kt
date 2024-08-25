@@ -2,16 +2,10 @@ package com.example.chat_app.socket
 
 import io.socket.client.IO
 import io.socket.client.Socket
-import kotlinx.coroutines.channels.Channel
 import java.net.URISyntaxException
 
 class SocketManager {
     private lateinit var socket: Socket
-    private val _messageChannel = Channel<String> (capacity = Channel.UNLIMITED) {
-        Channel.BUFFERED
-    }
-
-    val messageChannel = _messageChannel
 
     init {
         try {

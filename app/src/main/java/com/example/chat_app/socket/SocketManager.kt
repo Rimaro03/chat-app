@@ -2,6 +2,7 @@ package com.example.chat_app.socket
 
 import io.socket.client.IO
 import io.socket.client.Socket
+import org.json.JSONObject
 import java.net.URISyntaxException
 
 class SocketManager {
@@ -34,10 +35,10 @@ class SocketManager {
 
     }
 
-    fun onMessageReceived(listener: (String) -> Unit) {
+    fun onMessageReceived(listener: (JSONObject) -> Unit) {
         socket.on("message") { args ->
             if(args.isNotEmpty()) {
-                val message = args[0] as String
+                val message = args[0] as JSONObject
                 listener(message)
             }
         }

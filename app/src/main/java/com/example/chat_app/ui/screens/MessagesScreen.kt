@@ -23,13 +23,15 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import com.example.chat_app.data.Message
 import com.example.chat_app.socket.SocketManager
+import com.example.chat_app.ui.components.MessageStyle
 
 @Composable
 fun MessagesScreen(
     socketManager: SocketManager = SocketManager(),
-    messages: List<String> = emptyList(),
-    addMessage: (String) -> Unit = {},
+    messages: List<Message> = emptyList(),
+    addMessage: (Message) -> Unit = {},
     modifier: Modifier = Modifier
 ) {
     var message by remember { mutableStateOf("")}
@@ -46,8 +48,10 @@ fun MessagesScreen(
                 .verticalScroll(rememberScrollState())
                 .padding(bottom = 8.dp)
         ) {
-            messages.forEach {
-                Text(it)
+            messages.forEach { message ->
+                MessageStyle(
+                    message = message
+                )
             }
         }
 
@@ -71,7 +75,13 @@ fun MessagesScreen(
                         socketManager.sendMessage(message)
                     }
                     println("Message sent: $message")
-                    addMessage(message)
+                    val msg = Message(
+                        message = message,
+                        user = "You",
+                        timestamp = "12:00",
+                        sentByCurrentUser = true
+                    )
+                    addMessage(msg)
                     message = ""
                 },
             ) {

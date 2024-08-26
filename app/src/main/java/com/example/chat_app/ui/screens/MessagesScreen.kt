@@ -45,7 +45,7 @@ fun MessagesScreen(
             modifier = Modifier
                 .fillMaxWidth()
                 .weight(1f, true)
-                .verticalScroll(rememberScrollState())
+                .verticalScroll(rememberScrollState(), reverseScrolling = true)
                 .padding(bottom = 8.dp)
         ) {
             messages.forEach { message ->
@@ -73,16 +73,16 @@ fun MessagesScreen(
                 onClick = {
                     if(message.isNotEmpty()) {
                         socketManager.sendMessage(message)
+                        println("Message sent: $message")
+                        val msg = Message(
+                            message = message,
+                            user = "You",
+                            timestamp = "12:00",
+                            sentByCurrentUser = true
+                        )
+                        addMessage(msg)
+                        message = ""
                     }
-                    println("Message sent: $message")
-                    val msg = Message(
-                        message = message,
-                        user = "You",
-                        timestamp = "12:00",
-                        sentByCurrentUser = true
-                    )
-                    addMessage(msg)
-                    message = ""
                 },
             ) {
                 Icon(Icons.AutoMirrored.Filled.Send, contentDescription = "Send")

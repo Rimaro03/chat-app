@@ -1,6 +1,7 @@
 package com.example.chat_app.ui.components
 
 import androidx.compose.foundation.background
+import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
@@ -9,6 +10,7 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
@@ -26,10 +28,12 @@ fun MessageStyle (
     modifier: Modifier = Modifier,
     message: Message
 ) {
-    //TODO: change the background color based on the system color mode
-    val backgroundColor = if (message.sentByCurrentUser) Color(0xFFDCF8C6) else Color.White
+    val backgroundColor =
+        if (message.sentByCurrentUser) {
+            if(isSystemInDarkTheme()) Color(0xFF005B4A) else Color(0xFFDCF8C6)
+        } else MaterialTheme.colorScheme.primaryContainer
     val alignment = if (message.sentByCurrentUser) Alignment.CenterEnd else Alignment.CenterStart
-    val padding = if (message.sentByCurrentUser) PaddingValues(start = 64.dp, end = 8.dp) else PaddingValues(start = 8.dp, end = 64.dp)
+    val padding = if (message.sentByCurrentUser) PaddingValues(start = 64.dp, end = 8.dp, top = 8.dp) else PaddingValues(start = 8.dp, end = 64.dp, top = 8.dp)
 
     Box (
         modifier = Modifier
@@ -53,7 +57,7 @@ fun MessageStyle (
             Text(
                 text = message.message,
                 fontSize = 16.sp,
-                color = Color.Black
+                color = MaterialTheme.typography.bodyMedium.color
             )
             Spacer(modifier = Modifier.height(4.dp))
             Text(

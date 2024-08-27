@@ -32,8 +32,11 @@ fun MessageStyle (
         if (message.sentByCurrentUser) {
             if(isSystemInDarkTheme()) Color(0xFF005B4A) else Color(0xFFDCF8C6)
         } else MaterialTheme.colorScheme.primaryContainer
-    val alignment = if (message.sentByCurrentUser) Alignment.CenterEnd else Alignment.CenterStart
-    val padding = if (message.sentByCurrentUser) PaddingValues(start = 64.dp, end = 8.dp, top = 8.dp) else PaddingValues(start = 8.dp, end = 64.dp, top = 8.dp)
+    val alignment =
+        if (message.sentByCurrentUser) Alignment.CenterEnd else Alignment.CenterStart
+    val padding =
+        if (message.sentByCurrentUser) PaddingValues(start = 64.dp, end = 8.dp, top = 8.dp)
+        else PaddingValues(start = 8.dp, end = 64.dp, top = 8.dp)
 
     Box (
         modifier = Modifier

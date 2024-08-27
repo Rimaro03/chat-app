@@ -29,10 +29,10 @@ import com.example.chat_app.ui.components.MessageStyle
 
 @Composable
 fun MessagesScreen(
+    modifier: Modifier = Modifier,
     socketManager: SocketManager = SocketManager(),
     messages: List<Message> = emptyList(),
     addMessage: (Message) -> Unit = {},
-    modifier: Modifier = Modifier
 ) {
     var message by remember { mutableStateOf("")}
 

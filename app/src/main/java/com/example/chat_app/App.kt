@@ -26,6 +26,7 @@ import com.example.chat_app.socket.SocketManager
 import com.example.chat_app.ui.ChatViewModel
 import com.example.chat_app.ui.screens.LoginScreen
 import com.example.chat_app.ui.screens.MessagesScreen
+import com.example.chat_app.ui.screens.UsersScreen
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -76,6 +77,7 @@ fun App(
         modifier = Modifier.fillMaxSize()
     ) { innerPadding ->
         val messages by viewModel.messages.collectAsState()
+        val users by viewModel.users.collectAsState()
 
         NavHost(
             navController = navController,
@@ -84,10 +86,16 @@ fun App(
         ){
             composable(route = Routes.Login.name) {
                 LoginScreen(
-                    onLogin = {
-                        socketManager.connect()
-                        navController.navigate(Routes.Messages.name)
+                    onLogin = { username ->
+                        socketManager.connect(username)
+                        navController.navigate(Routes.Users.name)
                     },
+                )
+            }
+            composable(route = Routes.Users.name) {
+                UsersScreen(
+                    modifier = Modifier.fillMaxHeight(),
+                    users = users
                 )
             }
             composable(route = Routes.Messages.name) {

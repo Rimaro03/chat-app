@@ -22,15 +22,9 @@ import androidx.compose.ui.unit.dp
 
 @Composable
 fun LoginScreen(
-    onLogin: () -> Unit
+    onLogin: (username: String) -> Unit
 ) {
-    var message by remember { mutableStateOf("")}
-
-    fun handleLogin() {
-        if (message.isNotEmpty()) {
-            onLogin()
-        }
-    }
+    var username by remember { mutableStateOf("")}
 
     Column (
         modifier = Modifier
@@ -40,15 +34,19 @@ fun LoginScreen(
         verticalArrangement = Arrangement.Center
     ) {
         TextField(
-            value = message,
-            onValueChange = {message = it},
+            value = username,
+            onValueChange = {username = it},
             label = { Text("Username") },
             placeholder = { Text("Enter a username") }
         )
         Spacer(modifier = Modifier.padding(40.dp))
         Box(modifier = Modifier.padding(40.dp, 0.dp, 40.dp, 0.dp)) {
             Button(
-                onClick = {handleLogin()},
+                onClick = {
+                    if (username.isNotEmpty()) {
+                        onLogin(username)
+                    }
+                },
                 modifier = Modifier.fillMaxWidth()
             ) {
                 Text("Login")
